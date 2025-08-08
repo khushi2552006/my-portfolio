@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enchanted Aurora & Crystal World</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #0a0e27 0%, #1a237e 50%, #000428 100%);
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+            cursor: crosshair;
+        }
+
+        /* Dynamic Starfield */
+        .starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Aurora Animation */
+        .aurora {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, 
+                rgba(0, 255, 170, 0.1) 0%, 
+                rgba(0, 212, 255, 0.1) 25%, 
+                rgba(157, 0, 255, 0.1) 50%, 
+                rgba(255, 0, 170, 0.1) 75%, 
+                rgba(0, 255, 170, 0.1) 100%);
+            animation: auroraWave 15s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes auroraWave {
+            0%, 100% { 
+                background: linear-gradient(to bottom, 
+                    rgba(0, 255, 170, 0.1) 0%, 
+                    rgba(0, 212, 255, 0.1) 25%, 
+                    rgba(157, 0, 255, 0.1) 50%, 
+                    rgba(255, 0, 170, 0.1) 75%, 
+                    rgba(0, 255, 170, 0.1) 100%);
+                transform: translateY(0) scale(1);
+            }
+            25% { 
+                background: linear-gradient(to bottom, 
+                    rgba(157, 0, 255, 0.15) 0%, 
+                    rgba(255, 0, 170, 0.15) 25%, 
+                    rgba(0, 255, 170, 0.15) 50%, 
+                    rgba(0, 212, 255, 0.15) 75%, 
+                    rgba(157, 0, 255, 0.15) 100%);
+                transform: translateY(-10px) scale(1.02);
+            }
+            50% { 
+                background: linear-gradient(to bottom, 
+                    rgba(0, 212, 255, 0.2) 0%, 
+                    rgba(0, 255, 170, 0.2) 25%, 
+                    rgba(255, 0, 170, 0.2) 50%, 
+                    rgba(157, 0, 255, 0.2) 75%, 
+                    rgba(0, 212, 255, 0.2) 100%);
+                transform: translateY(10px) scale(1.05);
+            }
+            75% { 
+                background: linear-gradient(to bottom, 
+                    rgba(255, 0, 170, 0.15) 0%, 
+                    rgba(157, 0, 255, 0.15) 25%, 
+                    rgba(0, 212, 255, 0.15) 50%, 
+                    rgba(0, 255, 170, 0.15) 75%, 
+                    rgba(255, 0, 170, 0.15) 100%);
+                transform: translateY(-5px) scale(1.03);
+            }
+        }
+
+        /* Background Waves */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='rgba(0, 212, 255, 0.2)'/%3E%3C/svg%3E");
+            background-size: 1200px 100px;
+            animation: wave 10s linear infinite;
+            z-index: 2;
+        }
+
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1200px; }
+        }
+
+        /* Snowfall */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1em;
+            animation: fall linear infinite;
+            z-index: 3;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Shooting Stars */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+            animation: shoot 3s linear;
+            z-index: 4;
+        }
+
+        .shooting-star::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            height: 1px;
+            background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.8));
+            right: 0;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-500px) translateY(300px);
+                opacity: 0;
+            }
+        }
+
+        /* Crystals */
+        .crystal {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(0, 212, 255, 0.6));
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+            animation: float 8s ease-in-out infinite, rotate 12s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-20px) translateX(10px); }
+            50% { transform: translateY(0) translateX(20px); }
+            75% { transform: translateY(20px) translateX(10px); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Floating Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: orbFloat 20s infinite ease-in-out;
+            z-index: 6;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                background: radial-gradient(circle, rgba(0, 255, 170, 0.6), transparent);
+            }
+            25% {
+                transform: translate(100px, -50px) scale(1.2);
+                background: radial-gradient(circle, rgba(157, 0, 255, 0.6), transparent);
+            }
+            50% {
+                transform: translate(-50px, -100px) scale(0.8);
+                background: radial-gradient(circle, rgba(255, 0, 170, 0.6), transparent);
+            }
+            75% {
+                transform: translate(50px, 50px) scale(1.1);
+                background: radial-gradient(circle, rgba(0, 212, 255, 0.6), transparent);
+            }
+        }
+
+        /* Content Container */
+        .content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 2s ease-out;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffaa, #00d4ff, #9d00ff, #ff00aa);
+            border-radius: 20px;
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 0.3s ease;
+            animation: borderGlow 3s linear infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .info-card:hover::before {
+            opacity: 1;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #00ffaa, #00d4ff, #9d00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(0, 255, 170, 0.5);
+            animation: titlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .info-item {
+            margin: 15px 0;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            animation: slideLine 3s linear infinite;
+        }
+
+        @keyframes slideLine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .info-value {
+            color: #ffffff;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(0, 212, 255, 0.4) 100%);
+            border-radius: 50%;
+            animation: particleFloat 15s linear infinite;
+            z-index: 7;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+            transform: scale(0);
+            animation: rippleEffect 0.6s ease-out;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        @keyframes rippleEffect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Sparkle Effect */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkle 1s ease-out forwards;
+            z-index: 15;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .info-card {
+                padding: 30px 20px;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .info-value {
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dynamic Starfield -->
+    <div class="starfield" id="starfield"></div>
+    
+    <!-- Aurora Background -->
+    <div class="aurora"></div>
+    
+    <!-- Background Waves -->
+    <div class="wave"></div>
+    
+    <!-- Snowfall Container -->
+    <div id="snowfall"></div>
+    
+    <!-- Shooting Stars Container -->
+    <div id="shooting-stars"></div>
+    
+    <!-- Crystals Container -->
+    <div id="crystals"></div>
+    
+    <!-- Floating Orbs Container -->
+    <div id="orbs"></div>
+    
+    <!-- Floating Particles -->
+    <div id="particles"></div>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <div class="info-card" id="info-card">
+            <h1>Khushi Navdiya</h1>
+            
+            <div class="info-item">
+                <span class="info-label">Enrollment Number:</span>
+                <span class="info-value">240905040047</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">Batch:</span>
+                <span class="info-value">class-y B Tach</span>
+            </div>
+            
+            <div class="info-item">
+                <span class="info-label">Department:</span>
+                <span class="info-value">Computer engineer</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create dynamic starfield
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
+            }
+        }
+
+        // Create snowflakes
+        function createSnowflakes() {
+            const snowfallContainer = document.getElementById('snowfall');
+            const snowflakeSymbols = ['❄', '❅', '❆'];
+            
+            for (let i = 0; i < 100; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.innerHTML = snowflakeSymbols[Math.floor(Math.random() * snowflakeSymbols.length)];
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = Math.random() * 5 + 5 + 's';
+                snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                snowfallContainer.appendChild(snowflake);
+            }
+        }
+
+        // Create shooting stars
+        function createShootingStars() {
+            const shootingStarsContainer = document.getElementById('shooting-stars');
+            
+            setInterval(() => {
+                const shootingStar = document.createElement('div');
+                shootingStar.className = 'shooting-star';
+                shootingStar.style.left = Math.random() * 100 + '%';
+                shootingStar.style.top = Math.random() * 50 + '%';
+                shootingStshootingStar.style.top = Math.random() * 50 + '%';
+                shootingStarsContainer.appendChild(shootingStar);
+                
+                setTimeout(() => {
+                    shootingStar.remove();
+                }, 3000);
+            }, 5000);
+        }
+
+        // Create crystals
+        function createCrystals() {
+            const crystalsContainer = document.getElementById('crystals');
+            const colors = [
+                'linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(0, 212, 255, 0.6))',
+                'linear-gradient(135deg, rgba(255, 0, 170, 0.7), rgba(157, 0, 255, 0.5))',
+                'linear-gradient(135deg, rgba(0, 255, 170, 0.7), rgba(0, 212, 255, 0.5))'
+            ];
+            
+            for (let i = 0; i < 15; i++) {
+                const crystal = document.createElement('div');
+                crystal.className = 'crystal';
+                crystal.style.left = Math.random() * 100 + '%';
+                crystal.style.top = Math.random() * 100 + '%';
+                crystal.style.background = colors[Math.floor(Math.random() * colors.length)];
+                crystal.style.animationDelay = Math.random() * 5 + 's';
+                crystal.style.animationDuration = Math.random() * 5 + 8 + 's';
+                crystal.style.width = Math.random() * 20 + 20 + 'px';
+                crystal.style.height = crystal.style.width;
+                crystalsContainer.appendChild(crystal);
+            }
+        }
+
+        // Create floating orbs
+        function createOrbs() {
+            const orbsContainer = document.getElementById('orbs');
+            
+            for (let i = 0; i < 8; i++) {
+                const orb = document.createElement('div');
+                orb.className = 'orb';
+                orb.style.left = Math.random() * 100 + '%';
+                orb.style.top = Math.random() * 100 + '%';
+                orb.style.width = Math.random() * 100 + 50 + 'px';
+                orb.style.height = orb.style.width;
+                orb.style.animationDelay = Math.random() * 20 + 's';
+                orbsContainer.appendChild(orb);
+            }
+        }
+
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 6 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = Math.random() * 10 + 15 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Ripple effect on click
+        function createRipple(e) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            ripple.style.width = ripple.style.height = '20px';
+            ripple.style.left = e.clientX - 10 + 'px';
+            ripple.style.top = e.clientY - 10 + 'px';
+            document.body.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        }
+
+        // Sparkle effect on card hover
+        function createSparkles(e) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            for (let i = 0; i < 5; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = x + 'px';
+                sparkle.style.top = y + 'px';
+                sparkle.style.setProperty('--x', (Math.random() - 0.5) * 100 + 'px');
+                sparkle.style.setProperty('--y', (Math.random() - 0.5) * 100 + 'px');
+                e.currentTarget.appendChild(sparkle);
+                
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1000);
+            }
+        }
+
+        // Initialize all animations
+        window.addEventListener('load', () => {
+            createStarfield();
+            createSnowflakes();
+            createShootingStars();
+            createCrystals();
+            createOrbs();
+            createParticles();
+        });
+
+        // Event listeners
+        document.body.addEventListener('click', createRipple);
+        document.getElementById('info-card').addEventListener('mousemove', createSparkles);
+    </script>
+</body>
+</html>
